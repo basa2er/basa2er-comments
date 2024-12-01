@@ -1,6 +1,7 @@
 {
   "type": "module",
   "dependencies": {
+    "@sequelize/sqlite3": "^7.0.0-alpha.43",
     "express": "^4.21.1"
   }
 }

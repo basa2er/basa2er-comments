@@ -1,2 +1,3 @@
 - user creation-free, email used for reply notification
-- list of comments, comments per user, and comments hierarchy
+- list of comments per topic and comments hierarchy
+- simple SQLite database
