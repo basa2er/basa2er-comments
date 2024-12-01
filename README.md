@@ -1,0 +1,2 @@
+- user creation-free, email used for reply notification
+- list of comments, comments per user, and comments hierarchy
