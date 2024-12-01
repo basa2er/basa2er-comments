@@ -1,8 +1,8 @@
-import { Sequelize } from "@sequelize/sqlite3";
+import { Sequelize } from "@sequelize/core";
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './database.sqlite'
+  storage: './models/database.sqlite'
 });
 
 export default sequelize;

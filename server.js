@@ -11,13 +11,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/db', async (req, res) => {
+app.get('/db', async (req, res, next) => {
   try {
     await sequelize.authenticate();
     res.send('Database connected successfully!');
   } catch (error) {
     res.status(500).send('Unable to connect to the database: ' + error.message);
   }
+  next();
 });
 
 app.use((req, res, next) => {

@@ -1,9 +1,9 @@
-import { DataTypes } from "@sequelize/sqlite3";
+import { DataTypes } from "@sequelize/core";
 import sequelize from "./database.js";
 
 const Message = sequelize.define("message", {
   id: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     allowNull: false,
     unique: true,
   },
@@ -13,7 +13,7 @@ const Message = sequelize.define("message", {
     unique: true,
   },
   message: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
 });
