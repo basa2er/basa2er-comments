@@ -1,4 +1,4 @@
-app.post("/users", async (req, res) => {
+export async function createUser(req, res) {
   try {
     const { name, email } = req.body;
     const user = await User.create({ name, email });
@@ -6,18 +6,18 @@ app.post("/users", async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
-});
+}
 
-app.get("/users", async (req, res) => {
+export async function getAllUsers(req, res) {
   try {
     const users = await User.findAll();
     res.status(200).json(users);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
-});
+}
 
-app.get("/users/:id", async (req, res) => {
+export async function getUser(req, res) {
   try {
     const user = await User.findByPk(req.params.id);
     if (!user) {
@@ -27,9 +27,9 @@ app.get("/users/:id", async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
-});
+}
 
-app.put("/users/:id", async (req, res) => {
+export async function updateUser(req, res) {
   try {
     const { name, email } = req.body;
     const user = await User.findByPk(req.params.id);
@@ -43,9 +43,9 @@ app.put("/users/:id", async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
-});
+}
 
-app.delete("/users/:id", async (req, res) => {
+export async function deleteUser(req, res) {
   try {
     const user = await User.findByPk(req.params.id);
     if (!user) {
@@ -56,4 +56,4 @@ app.delete("/users/:id", async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
-});
+}

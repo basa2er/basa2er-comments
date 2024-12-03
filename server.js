@@ -1,4 +1,5 @@
 import messageRoutes from "./routes/messageRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import sequelize from "./models/database.js";
 import express from "express";
 
@@ -16,7 +17,7 @@ app.get('/db', async (req, res, next) => {
     await sequelize.authenticate();
     res.send('Database connected successfully!');
   } catch (error) {
-    res.status(500).send('Unable to connect to the database: ' + error.message);
+    res.status(500).send('Database connexion failed: ' + error.message);
   }
   next();
 });
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/comments", messageRoutes);
+app.use("/api/users", userRoutes);
 
 sequelize.sync().then(() => {
   const port = 3000;
