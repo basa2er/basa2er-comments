@@ -1,7 +1,7 @@
 import { DataTypes } from "@sequelize/core";
 import sequelize from "./database.js";
 
-const Message = sequelize.define("message", {
+const Message = sequelize.define("Message", {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -18,4 +18,4 @@ const Message = sequelize.define("message", {
   },
 });
 
-module.exports = Message;
+export default Message;
