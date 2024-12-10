@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-app.use("/api/comments", messageRoutes);
+app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
 
 sequelize.sync().then(() => {
