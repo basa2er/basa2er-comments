@@ -24,13 +24,13 @@ export async function readMessage(req, res) {
 
 export async function updateMessage(req, res) {
   try {
-    const { name, email } = req.body;
+    const { content } = req.body;
     const message = await Message.findByPk(req.params.id);
     if (!message) {
       return res.status(404).json({ message: "Comment not found" });
     }
-    message.name = name || message.name;
-    message.email = email || message.email;
+    message.content = content || message.content;
+    message.date = new Date();
     await message.save();
     res.status(200).json(message);
   } catch (error) {

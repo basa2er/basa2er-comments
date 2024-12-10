@@ -1,3 +1,0 @@
-- basic username + password identification, with username uniqueness and password hashing,
-- list of comments per topic and comments hierarchy
-- simple SQLite database
