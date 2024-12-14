@@ -10,7 +10,7 @@ const Message = sequelize.define(
       autoIncrement: true,
       unique: true,
     },
-    author: {
+    user: {
       type: DataTypes.STRING,
       allowNull: false,
     },
