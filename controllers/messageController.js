@@ -6,11 +6,11 @@ export async function createMessage(req, res) {
     const { username, password, content, parent } = req.body;
 
     const user = await User.findByPk(username);
-    if (!user && user.password !== password) {
+    if (!user || user.password !== password) {
       return res.status(401).json({ message: "Invalid credentials!" });
     }
 
-    const message = await Message.create({ user, content, parent });
+    const message = await Message.create({ user: username, content, parent });
     res.status(201).json(message);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -35,14 +35,14 @@ export async function updateMessage(req, res) {
     const { username, password, content } = req.body;
 
     const user = await User.findByPk(username);
-    if (!user && user.password !== password) {
+    if (!user || user.password !== password) {
       return res.status(401).json({ message: "Invalid credentials!" });
     }
     const message = await Message.findByPk(req.params.id);
     if (!message) {
       return res.status(404).json({ message: "Comment not found!" });
     }
-    if (message.username != username) {
+    if (message.user != username) {
       return res.status(403).json({ message: "Access forbidden!" });
     }
 
@@ -60,14 +60,14 @@ export async function deleteMessage(req, res) {
     const { username, password } = req.body;
 
     const user = await User.findByPk(username);
-    if (!user && user.password !== password) {
+    if (!user || user.password !== password) {
       return res.status(401).json({ message: "Invalid credentials!" });
     }
     const message = await Message.findByPk(req.params.id);
     if (!message) {
       return res.status(404).json({ message: "Comment not found!" });
     }
-    if (message.username != username) {
+    if (message.user != username) {
       return res.status(403).json({ message: "Access forbidden!" });
     }
 
