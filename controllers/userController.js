@@ -18,7 +18,7 @@ export async function getUser(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
     
-    res.status(200).json(user);
+    res.status(200).json({ message: "User found" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
