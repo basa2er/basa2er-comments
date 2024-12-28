@@ -1,6 +1,6 @@
 import User from "../models/userModel.js";
 
-export async function addUser(req, res) {
+export async function registerUser(req, res) {
   try {
     const { username, password } = req.body;
 
@@ -11,14 +11,16 @@ export async function addUser(req, res) {
   }
 }
 
-export async function getUser(req, res) {
+export async function authenticateUser(req, res) {
   try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const { username, password } = req.body;
+
+    const user = await User.findByPk(username);
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: "FAILURE" });
     }
-    
-    res.status(200).json({ message: "User found" });
+
+    res.status(200).json({ message: "SUCCESS" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
