@@ -17,14 +17,17 @@ export async function createMessage(req, res) {
   }
 }
 
-export async function readMessage(req, res) {
+export async function readMessages(req, res) {
   try {
-    const message = await Message.findByPk(req.params.id);
-    if (!message) {
-      return res.status(404).json({ message: "Comment not found!" });
+    const messages = await Message.findAll({
+      where: { parent: req.params.id }
+    });
+
+    if (messages.length === 0) {
+      return res.status(404).json({ message: "No comments found!" });
     }
 
-    res.status(200).json(message);
+    res.status(200).json(messages);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
