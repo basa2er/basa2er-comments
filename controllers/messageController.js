@@ -23,10 +23,6 @@ export async function readMessages(req, res) {
       where: { parent: req.params.id }
     });
 
-    if (messages.length === 0) {
-      return res.status(404).json({ message: "No comments found!" });
-    }
-
     res.status(200).json(messages);
   } catch (error) {
     res.status(400).json({ message: error.message });
