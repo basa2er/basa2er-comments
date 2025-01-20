@@ -20,10 +20,23 @@ export async function createMessage(req, res) {
 export async function readMessages(req, res) {
   try {
     const messages = await Message.findAll({
-      where: { parent: req.params.id }
+      where: { parent: req.params.id },
     });
 
-    res.status(200).json(messages);
+    const discussions = await Promise.all(
+      messages.map(async (message) => {
+        const discussion = await Message.findAll({
+          where: { parent: message.id.toString() },
+        });
+
+        return {
+          ...message.get({ plain: true }),
+          replies: discussion.map((reply) => reply.get({ plain: true })),
+        };
+      })
+    );
+
+    res.status(200).json(discussions);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
