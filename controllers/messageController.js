@@ -9,6 +9,9 @@ export async function createMessage(req, res) {
     if (!user || user.password !== password) {
       return res.status(401).json({ message: "Invalid credentials!" });
     }
+    if (!content) {
+      return res.status(400).json({ message: "Content is required!" });
+    }
 
     const message = await Message.create({ user: username, content, parent });
     res.status(201).json(message);
@@ -43,6 +46,9 @@ export async function updateMessage(req, res) {
     }
     if (message.user != username) {
       return res.status(403).json({ message: "Access forbidden!" });
+    }
+    if (!content) {
+      return res.status(400).json({ message: "Content is required!" });
     }
 
     message.content = content || message.content;
