@@ -7,10 +7,10 @@ export async function createMessage(req, res) {
 
     const user = await User.findByPk(username);
     if (!user || user.password !== password) {
-      return res.status(401).json({ message: "Invalid credentials!" });
+      return res.status(401).json({ message: "Invalid Credentials!" });
     }
     if (!content) {
-      return res.status(400).json({ message: "Content is required!" });
+      return res.status(400).json({ message: "Comment is Empty!" });
     }
 
     const message = await Message.create({ user: username, content, parent });
@@ -38,17 +38,17 @@ export async function updateMessage(req, res) {
 
     const user = await User.findByPk(username);
     if (!user || user.password !== password) {
-      return res.status(401).json({ message: "Invalid credentials!" });
+      return res.status(401).json({ message: "Invalid Credentials!" });
     }
     const message = await Message.findByPk(req.params.id);
     if (!message) {
-      return res.status(404).json({ message: "Comment not found!" });
+      return res.status(404).json({ message: "Comment not Found!" });
     }
     if (message.user != username) {
-      return res.status(403).json({ message: "Access forbidden!" });
+      return res.status(403).json({ message: "Access Forbidden!" });
     }
     if (!content) {
-      return res.status(400).json({ message: "Content is required!" });
+      return res.status(400).json({ message: "Comment is Empty!" });
     }
 
     message.content = content || message.content;
@@ -66,18 +66,18 @@ export async function deleteMessage(req, res) {
 
     const user = await User.findByPk(username);
     if (!user || user.password !== password) {
-      return res.status(401).json({ message: "Invalid credentials!" });
+      return res.status(401).json({ message: "Invalid Credentials!" });
     }
     const message = await Message.findByPk(req.params.id);
     if (!message) {
-      return res.status(404).json({ message: "Comment not found!" });
+      return res.status(404).json({ message: "Comment not Found!" });
     }
     if (message.user != username) {
-      return res.status(403).json({ message: "Access forbidden!" });
+      return res.status(403).json({ message: "Access Forbidden!" });
     }
 
     await message.destroy();
-    res.status(200).json({ message: "Comment deleted." });
+    res.status(200).json({ message: "Comment Deleted." });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

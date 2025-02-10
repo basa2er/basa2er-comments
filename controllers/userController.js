@@ -5,7 +5,7 @@ export async function registerUser(req, res) {
     const { username, password } = req.body;
 
     await User.create({ username, password });
-    res.status(201).json({ message: "User created!" });
+    res.status(201).json({ message: "User Created!" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
