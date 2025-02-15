@@ -10,8 +10,9 @@ const User = sequelize.define(
       allowNull: false,
       unique: true,
       validate: {
-        isAlphanumeric: {
-          msg: "Username can only contain letters and numbers.",
+        is: {
+          args: /^[a-zA-Z0-9 ]+$/,
+          msg: "Username can only contain letters, numbers, and spaces.",
         },
         len: {
           args: [3, 25],
@@ -24,8 +25,8 @@ const User = sequelize.define(
       allowNull: false,
       validate: {
         len: {
-          args: [8, 100],
-          msg: "Password must be at least 8 characters long.",
+          args: [8, 30],
+          msg: "Password must be between 8 and 30 characters long.",
         }
       }
     },
