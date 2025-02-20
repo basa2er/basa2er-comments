@@ -4,7 +4,7 @@ export async function registerUser(req, res) {
   try {
     let { username, password } = req.body;
     username = username.trim();
-    const usernameRegex = /^[a-zA-Z0-9 ]+$/;
+    const usernameRegex = /^[a-zA-Z0-9\u0600-\u06FF ]+$/;
 
     if (!usernameRegex.test(username))
       return res.status(400).json({ code: 11, message: "Username must be Alphanumeric!" });

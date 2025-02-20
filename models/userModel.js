@@ -11,7 +11,7 @@ const User = sequelize.define(
       unique: true,
       validate: {
         is: {
-          args: /^[a-zA-Z0-9 ]+$/,
+          args: /^[a-zA-Z0-9\u0600-\u06FF ]+$/,
           msg: "Username can only contain letters, numbers, and spaces.",
         },
         len: {
