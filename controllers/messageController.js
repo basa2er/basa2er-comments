@@ -1,3 +1,4 @@
+import { Op } from "@sequelize/core";
 import Message from "../models/messageModel.js";
 import User from "../models/userModel.js";
 
@@ -25,7 +26,10 @@ export async function createMessage(req, res) {
 export async function readMessages(req, res) {
   try {
     const messages = await Message.findAll({
-      where: { parent: req.params.id }
+      where: {
+        parent: req.params.id,
+        status: { [Op.ne]: "removed" },
+      },
     });
 
     res.status(200).json(messages);
@@ -49,12 +53,13 @@ export async function updateMessage(req, res) {
     const message = await Message.findByPk(req.params.id);
     if (!message)
       return res.status(404).json({ code: 54, message: "Comment not Found!" });
-    if (message.user != username) 
+    if (message.user != username)
       return res.status(403).json({ code: 55, message: "Access Forbidden!" });
     if (!content)
       return res.status(400).json({ code: 56, message: "Comment is Empty!" });
 
     message.content = content || message.content;
+    message.status = "edited";
     message.date = new Date();
     await message.save();
     res.status(200).json(message);
@@ -74,14 +79,16 @@ export async function deleteMessage(req, res) {
       return res.status(401).json({ code: 62, message: "Invalid Password!" });
     if (user.status == "blocked")
       return res.status(403).json({ code: 63, message: "Account Blocked!" });
-    
+
     const message = await Message.findByPk(req.params.id);
     if (!message)
       return res.status(404).json({ code: 64, message: "Comment not Found!" });
-    if (message.user != username) 
+    if (message.user != username)
       return res.status(403).json({ code: 65, message: "Access Forbidden!" });
 
-    await message.destroy();
+    message.status = "removed";
+    message.date = new Date();
+    await message.save();
     res.status(200).json(message);
   } catch (error) {
     res.status(400).json({ code: 60, message: error.message });
