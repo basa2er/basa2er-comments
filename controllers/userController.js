@@ -29,6 +29,8 @@ export async function authenticateUser(req, res) {
       return res.status(401).json({ code: 21, message: "Invalid Username!" });
     if (user.password != password)
       return res.status(401).json({ code: 22, message: "Invalid Password!" });
+    if (user.status == "blocked")
+      return res.status(403).json({ code: 23, message: "Account Blocked!" });
 
     res.status(200).json({ code: 29, message: "User Authenticated." });
   } catch (error) {
