@@ -1,6 +1,9 @@
 import { Op } from "@sequelize/core";
 import Message from "../models/messageModel.js";
 import User from "../models/userModel.js";
+import fs from 'fs';
+import {join, dirname} from 'path';
+import { fileURLToPath } from 'url';
 
 export async function readMessages(req, res) {
   try {
@@ -95,4 +98,24 @@ async function authorizeUser(username, password) {
     return { code: 3, message: "Account Blocked!" };
   
   return { code: 0, message: "User Authorized." };
+}
+
+export async function exportMessages(req, res) {
+  try {
+    const messages = await Message.findAll();
+    const filePath = join(
+      dirname(fileURLToPath(import.meta.url)),
+      "../database",
+      `messages_${Date.now()}.json`
+    );
+
+    fs.writeFileSync(filePath, JSON.stringify(messages, null, 2));
+
+    res.download(filePath, `messages_${Date.now()}.json`, (err) => {
+      if (err)
+        res.status(500).json({ code: 71, message: "Download Failed!" });
+    });
+  } catch (error) {
+    res.status(400).json({ code: 70, message: error.message });
+  }
 }
