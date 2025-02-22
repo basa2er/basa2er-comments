@@ -5,6 +5,22 @@ import fs from 'fs';
 import {join, dirname} from 'path';
 import { fileURLToPath } from 'url';
 
+
+const ADMIN_TOKEN = '7P11QK39PIDI7Y9X63V5';
+
+async function authorizeUser(username, password) {
+  const user = await User.findByPk(username);
+  if (!user)
+    return { code: 1, message: "Invalid Username!" };
+  if (user.password != password)
+    return { code: 2, message: "Invalid Password!" };
+  if (user.status == "blocked")
+    return { code: 3, message: "Account Blocked!" };
+  
+  return { code: 0, message: "User Authorized." };
+}
+
+
 export async function readMessages(req, res) {
   try {
     const messages = await Message.findAll({
@@ -88,20 +104,13 @@ export async function deleteMessage(req, res) {
   }
 }
 
-async function authorizeUser(username, password) {
-  const user = await User.findByPk(username);
-  if (!user)
-    return { code: 1, message: "Invalid Username!" };
-  if (user.password != password)
-    return { code: 2, message: "Invalid Password!" };
-  if (user.status == "blocked")
-    return { code: 3, message: "Account Blocked!" };
-  
-  return { code: 0, message: "User Authorized." };
-}
 
 export async function exportMessages(req, res) {
   try {
+    const { token } = req.body;
+    if (token != ADMIN_TOKEN)
+      return res.status(401).json({ code: 71, message: "Access Denied!" });
+    
     const messages = await Message.findAll();
     const filePath = join(
       dirname(fileURLToPath(import.meta.url)),
@@ -111,9 +120,9 @@ export async function exportMessages(req, res) {
 
     fs.writeFileSync(filePath, JSON.stringify(messages, null, 2));
 
-    res.download(filePath, `messages_${Date.now()}.json`, (err) => {
-      if (err)
-        res.status(500).json({ code: 71, message: "Download Failed!" });
+    res.download(filePath, `messages_${Date.now()}.json`, (error) => {
+      if (error)
+        res.status(500).json({ code: 72, message: "Download Failed!" });
     });
   } catch (error) {
     res.status(400).json({ code: 70, message: error.message });
