@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import { exportData, importData } from "../database/backupUtilities.js";
 
 export async function registerUser(req, res) {
   try {
@@ -36,4 +37,13 @@ export async function authenticateUser(req, res) {
   } catch (error) {
     res.status(400).json({ code: 20, message: error.message });
   }
+}
+
+
+export async function exportUsers(req, res) {
+  await exportData(req, res, User);
+}
+
+export async function importUsers(req, res) {
+  await importData(req, res, User);
 }

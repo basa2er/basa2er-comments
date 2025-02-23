@@ -1,3 +1,4 @@
 /node_modules/
 /.vscode/
-/database/messages_*.json
+/database/Message_*.json
+/database/User_*.json

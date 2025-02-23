@@ -3,6 +3,8 @@ import userRoutes from "./routes/userRoutes.js";
 import sequelize from "./models/database.js";
 import express from "express";
 
+export const ADMIN_TOKEN = '7P11QK39PIDI7Y9X63V5';
+
 const app = express();
 
 app.use((req, res, next) => {

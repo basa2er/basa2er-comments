@@ -1,12 +1,8 @@
-import { Op } from "@sequelize/core";
 import Message from "../models/messageModel.js";
 import User from "../models/userModel.js";
-import fs from 'fs';
-import {join, dirname} from 'path';
-import { fileURLToPath } from 'url';
+import { Op } from "@sequelize/core";
+import { exportData, importData } from "../database/backupUtilities.js";
 
-
-const ADMIN_TOKEN = '7P11QK39PIDI7Y9X63V5';
 
 async function authorizeUser(username, password) {
   const user = await User.findByPk(username);
@@ -106,41 +102,9 @@ export async function deleteMessage(req, res) {
 
 
 export async function exportMessages(req, res) {
-  try {
-    const { token } = req.body;
-    if (token != ADMIN_TOKEN)
-      return res.status(401).json({ code: 71, message: "Access Denied!" });
-    
-    const messages = await Message.findAll();
-    const filePath = join(dirname(fileURLToPath(import.meta.url)), "../database", `messages_${Date.now()}.json`);
-
-    fs.writeFileSync(filePath, JSON.stringify(messages, null, 2));
-
-    res.download(filePath, `messages_${Date.now()}.json`, (error) => {
-      if (error)
-        res.status(500).json({ code: 71, message: "Download Failed!" });
-      else
-        res.status(200).json({ code: 79, message: "Export Succeeded." });
-    });
-  } catch (error) {
-    res.status(400).json({ code: 70, message: error.message });
-  }
+  await exportData(req, res, Message);
 }
 
 export async function importMessages(req, res) {
-  try {
-    const { token, fileName } = req.body;
-    if (token != ADMIN_TOKEN)
-      return res.status(401).json({ code: 81, message: "Access Denied!" });
-
-    const filePath = join(dirname(fileURLToPath(import.meta.url)), "../database", fileName);
-
-    const messages = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-    for (const messageData of messages)
-      await Message.upsert(messageData);
-    
-    res.status(201).json({ code: 89, message: "Import Succeeded." });
-  } catch (error) {
-    res.status(400).json({ code: 80, message: error.message });
-  }
+  await importData(req, res, Message);
 }
