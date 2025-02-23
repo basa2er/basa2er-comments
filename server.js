@@ -29,14 +29,14 @@ app.use("/api/users", userRoutes);
 
 try {
   await sequelize.authenticate();
-  console.log('Database connected successfully!');
+  console.log('DB connection succeeded.');
 } catch (error) {
-  console.error('Database connection failed:', error.message);
+  console.error('DB connection failed :', error.message);
   process.exit(1);
 }
 
 sequelize.sync().then(() => {
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
+    console.log(`Server running on port ${PORT}.`);
   });
 });

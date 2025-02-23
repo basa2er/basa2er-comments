@@ -19,8 +19,6 @@ export async function exportData(req, res, Model) {
     res.download(filePath, fileName, (error) => {
       if (error)
         res.status(500).json({ code: 72, message: "Download Failed!" });
-      else
-        res.status(200).json({ code: 79, message: "Export Succeeded." });
     });
   } catch (error) {
     res.status(400).json({ code: 70, message: error.message });
