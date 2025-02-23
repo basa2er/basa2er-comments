@@ -112,19 +112,35 @@ export async function exportMessages(req, res) {
       return res.status(401).json({ code: 71, message: "Access Denied!" });
     
     const messages = await Message.findAll();
-    const filePath = join(
-      dirname(fileURLToPath(import.meta.url)),
-      "../database",
-      `messages_${Date.now()}.json`
-    );
+    const filePath = join(dirname(fileURLToPath(import.meta.url)), "../database", `messages_${Date.now()}.json`);
 
     fs.writeFileSync(filePath, JSON.stringify(messages, null, 2));
 
     res.download(filePath, `messages_${Date.now()}.json`, (error) => {
       if (error)
-        res.status(500).json({ code: 72, message: "Download Failed!" });
+        res.status(500).json({ code: 71, message: "Download Failed!" });
+      else
+        res.status(200).json({ code: 79, message: "Export Succeeded." });
     });
   } catch (error) {
     res.status(400).json({ code: 70, message: error.message });
+  }
+}
+
+export async function importMessages(req, res) {
+  try {
+    const { token, fileName } = req.body;
+    if (token != ADMIN_TOKEN)
+      return res.status(401).json({ code: 81, message: "Access Denied!" });
+
+    const filePath = join(dirname(fileURLToPath(import.meta.url)), "../database", fileName);
+
+    const messages = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    for (const messageData of messages)
+      await Message.upsert(messageData);
+    
+    res.status(201).json({ code: 89, message: "Import Succeeded." });
+  } catch (error) {
+    res.status(400).json({ code: 80, message: error.message });
   }
 }

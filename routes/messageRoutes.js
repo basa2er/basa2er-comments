@@ -4,6 +4,7 @@ import * as messageController from "../controllers/messageController.js";
 const router = Router();
 
 router.get("/export", messageController.exportMessages);
+router.post("/import", messageController.importMessages);
 
 router.get("/:id", messageController.readMessages);
 router.post("/", messageController.createMessage);
