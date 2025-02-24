@@ -9,4 +9,6 @@ router.post("/import", userController.importUsers);
 router.post("/register", userController.registerUser);
 router.post("/authenticate", userController.authenticateUser);
 
+router.patch("/modify/:id", userController.modifyUser);
+
 export default router;

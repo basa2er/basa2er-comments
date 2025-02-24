@@ -8,7 +8,7 @@ export async function exportData(req, res, Model) {
   try {
     const { token } = req.body;
     if (token != TOKEN)
-      return res.status(401).json({ code: 71, message: "Access Denied!" });
+      return res.status(401).json({ code: 81, message: "Access Denied!" });
 
     const data = await Model.findAll();
     const fileName = `${Model.name}_${Date.now()}.json`;
@@ -18,10 +18,10 @@ export async function exportData(req, res, Model) {
 
     res.download(filePath, fileName, (error) => {
       if (error)
-        res.status(500).json({ code: 72, message: "Download Failed!" });
+        res.status(500).json({ code: 82, message: "Download Failed!" });
     });
   } catch (error) {
-    res.status(400).json({ code: 70, message: error.message });
+    res.status(400).json({ code: 80, message: error.message });
   }
 }
 
@@ -29,7 +29,7 @@ export async function importData(req, res, Model) {
   try {
     const { token, fileName } = req.body;
     if (token != TOKEN)
-      return res.status(401).json({ code: 81, message: "Access Denied!" });
+      return res.status(401).json({ code: 91, message: "Access Denied!" });
 
     const filePath = join(dirname(fileURLToPath(import.meta.url)), fileName);
 
@@ -37,8 +37,8 @@ export async function importData(req, res, Model) {
     for (const item of data)
       await Model.upsert(item);
 
-    res.status(201).json({ code: 89, message: "Import Succeeded." });
+    res.status(201).json({ code: 99, message: "Import Succeeded." });
   } catch (error) {
-    res.status(400).json({ code: 80, message: error.message });
+    res.status(400).json({ code: 90, message: error.message });
   }
 }

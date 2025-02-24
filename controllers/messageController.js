@@ -2,6 +2,7 @@ import Message from "../models/messageModel.js";
 import User from "../models/userModel.js";
 import { Op } from "@sequelize/core";
 import { exportData, importData } from "../database/backupUtilities.js";
+import { TOKEN } from "../server.js";
 
 
 async function authorizeUser(username, password) {
@@ -22,7 +23,7 @@ export async function readMessages(req, res) {
     const messages = await Message.findAll({
       where: {
         parent: req.params.id,
-        status: { [Op.ne]: "removed" },
+        status: { [Op.notIn]: ["removed", "blocked"] },
       },
     });
 
@@ -44,6 +45,7 @@ export async function createMessage(req, res) {
       return res.status(401).json({ code: 30 + authorization.code, message: authorization.message });
 
     const message = await Message.create({ user: username, content, parent });
+
     res.status(201).json(message);
   } catch (error) {
     res.status(400).json({ code: 30, message: error.message });
@@ -71,6 +73,7 @@ export async function updateMessage(req, res) {
     message.status = "edited";
     message.date = new Date();
     await message.save();
+
     res.status(200).json(message);
   } catch (error) {
     res.status(400).json({ code: 50, message: error.message });
@@ -79,10 +82,10 @@ export async function updateMessage(req, res) {
 
 export async function deleteMessage(req, res) {
   try {
-    const { username, password } = req.body;
+    const { username, password, token } = req.body;
 
     const authorization = await authorizeUser(username, password);
-    if (authorization.code != 0)
+    if (authorization.code != 0 && token != TOKEN)
       return res.status(401).json({ code: 60 + authorization.code, message: authorization.message });
     
     const message = await Message.findByPk(req.params.id);
@@ -91,9 +94,12 @@ export async function deleteMessage(req, res) {
     if (message.user != username)
       return res.status(403).json({ code: 65, message: "Access Forbidden!" });
 
-    message.status = "removed";
+    token != TOKEN
+      ? message.status = "removed"
+      : message.status = "blocked";
     message.date = new Date();
     await message.save();
+
     res.status(200).json(message);
   } catch (error) {
     res.status(400).json({ code: 60, message: error.message });

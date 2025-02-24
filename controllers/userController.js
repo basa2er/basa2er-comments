@@ -1,5 +1,7 @@
 import User from "../models/userModel.js";
 import { exportData, importData } from "../database/backupUtilities.js";
+import { TOKEN } from "../server.js";
+
 
 export async function registerUser(req, res) {
   try {
@@ -15,6 +17,7 @@ export async function registerUser(req, res) {
       return res.status(400).json({ code: 13, message: "Invalid Password Length!" });
 
     await User.create({ username, password });
+
     res.status(201).json({ code: 19, message: "User Registered." });
   } catch (error) {
     res.status(400).json({ code: 10, message: error.message });
@@ -39,6 +42,27 @@ export async function authenticateUser(req, res) {
   }
 }
 
+export async function modifyUser(req, res) {
+  try {
+    let { username, password, toggle, token } = req.body;
+
+    if (token != TOKEN)
+      return res.status(401).json({ code: 71, message: "Access Forbidden!" });
+    
+    const user = await User.findByPk(req.params.id);
+    if (!user)
+      return res.status(404).json({ code: 72, message: "User not Found!" });
+
+    user.username = username || user.username;
+    user.password = password || user.password;
+    user.status = toggle == "Y" ? "blocked" : toggle == "N" ? "active" : user.status;
+    await user.save();
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json({ code: 70, message: error.message });
+  }
+}
 
 export async function exportUsers(req, res) {
   await exportData(req, res, User);
