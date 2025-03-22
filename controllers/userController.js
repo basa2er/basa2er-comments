@@ -42,6 +42,7 @@ export async function authenticateUser(req, res) {
   }
 }
 
+
 export async function modifyUser(req, res) {
   try {
     let { username, password, toggle, token } = req.body;

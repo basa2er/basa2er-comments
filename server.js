@@ -29,7 +29,7 @@ app.use("/api/users", userRoutes);
 
 try {
   await sequelize.authenticate();
-  console.log('DB connection succeeded.');
+  console.log('DB connection established.');
 } catch (error) {
   console.error('DB connection failed :', error.message);
   process.exit(1);

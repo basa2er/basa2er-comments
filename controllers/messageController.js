@@ -69,6 +69,10 @@ export async function updateMessage(req, res) {
     if (message.user != username)
       return res.status(403).json({ code: 55, message: "Access Forbidden!" });
 
+    const timeLimit = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    if (new Date(message.date) < timeLimit)
+      return res.status(403).json({ code: 57, message: "Time Limit Exceeded!" });
+
     message.content = content;
     message.status = "edited";
     message.date = new Date();
@@ -93,6 +97,10 @@ export async function deleteMessage(req, res) {
       return res.status(404).json({ code: 64, message: "Comment not Found!" });
     if (message.user != username)
       return res.status(403).json({ code: 65, message: "Access Forbidden!" });
+
+    const timeLimit = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    if (new Date(message.date) < timeLimit)
+      return res.status(403).json({ code: 66, message: "Time Limit Exceeded!" });
 
     token != TOKEN
       ? message.status = "removed"
